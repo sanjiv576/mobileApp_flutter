@@ -1,4 +1,7 @@
+// ignore_for_file: unnecessary_const
+
 import 'package:flutter/material.dart';
+import 'custom_shape.dart';
 
 void main() => runApp(MyApp());
 
@@ -8,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'MY BUSINESS CARD',
             style: TextStyle(
                 color: Colors.white,
@@ -16,25 +19,32 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Alegreya Sans SC'),
           ),
-          backgroundColor: Colors.orange[900],
-          shape: RoundedRectangleBorder(
-              //  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30),)
-              ),
+          centerTitle: true,
+          backgroundColor: const Color(0xFF004aad),
+          toolbarHeight: 150.0,
+          elevation: 0,
+          flexibleSpace: ClipPath(
+            clipper: CustomShape(),
+            child: Container(
+              color: const Color(0xFFff5757),
+              width: 900.0,
+            ),
+          ),
         ),
         body: SafeArea(
             child: Container(
-          color: Colors.blue[900],
+          color: const Color(0xFF004aad),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 70.0,
                 backgroundImage: AssetImage('images/myPic.png'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10.0,
               ),
-              Text(
+              const Text(
                 'SANJIV SHRESTHA',
                 style: TextStyle(
                     color: Colors.white,
@@ -42,11 +52,11 @@ class MyApp extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Alegreya Sans SC'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10.0,
               ),
-              Text(
-                'FLUTTER DEVELOPER',
+              const Text(
+                'LEARNING FLUTTER',
                 style: TextStyle(
                     color: Colors.white,
                     letterSpacing: 2.5,
@@ -54,17 +64,17 @@ class MyApp extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Alegreya Sans SC'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20.0,
                 width: 150.0,
                 child: Divider(
                   color: Colors.white,
                 ),
               ),
-              Card(
+              const Card(
                 color: Colors.white,
                 // padding: EdgeInsets.all(12.0),
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 80.0),
+                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 100.0),
                 child: ListTile(
                   leading: Icon(
                     Icons.phone,
@@ -80,10 +90,10 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
               ),
-              Card(
+              const Card(
                 color: Colors.white,
                 // padding: EdgeInsets.all(12.0),
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 80.0),
+                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 100.0),
                 child: ListTile(
                   leading: Icon(
                     Icons.email,
@@ -99,17 +109,17 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10.0,
                 width: 150.0,
                 child: Divider(
                   color: Colors.white,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 22.0,
               ),
-              Text(
+              const Text(
                 'CONNECT ME ON',
                 style: TextStyle(
                     color: Colors.white,
@@ -118,24 +128,33 @@ class MyApp extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Alegreya Sans SC'),
               ),
+              const SizedBox(
+                height: 10.0,
+              ),
               Container(
-                color: Colors.white,
-                padding: EdgeInsets.all(8.0),
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 140.0),
+                // color: Colors.white,  // cannot define color because of already in BoxDecoration
+                padding: const EdgeInsets.all(8.0),
+                margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 165.0),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(20),
+                  ),
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
+                  children: const <Widget>[
                     Icon(
                       Icons.facebook,
-                      size: 60.0,
+                      size: 50.0,
                       color: Colors.blue,
                     ),
                     CircleAvatar(
-                      radius: 25.0,
+                      radius: 20.0,
                       backgroundImage: AssetImage('images/instagram.png'),
                     ),
                     CircleAvatar(
-                      radius: 25.0,
+                      radius: 20.0,
                       backgroundImage: AssetImage('images/linkedin.png'),
                     ),
                   ],
