@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-const labelTextStyle = TextStyle(color: Color(0xFF8D8E98), fontSize: 18.0);
+// import constant properties
+import 'constants.dart';
 
 // custom Widget
 class IconContent extends StatelessWidget {
@@ -8,6 +8,7 @@ class IconContent extends StatelessWidget {
 
   final IconData? genderIcon;
   final String? gendertType;
+
   IconContent({required this.genderIcon, required this.gendertType});
 
   @override
@@ -26,7 +27,7 @@ class IconContent extends StatelessWidget {
           ),
           Text(
             '$gendertType',
-            style: labelTextStyle,
+            style: kLabelTextStyle,
           )
         ]);
   }
