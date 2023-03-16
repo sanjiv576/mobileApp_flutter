@@ -12,6 +12,9 @@ import 'results_page.dart';
 import '../components/round_icon_button.dart';
 import '../components/buttom_button.dart';
 
+// import calculator_brain file to calculate bmi of the user
+import 'package:bmi_calculator_flutter/functionalies/calculator_brain.dart';
+
 GenderType? selectedGender;
 int userHeight = 170;
 int userWeight = 60;
@@ -229,8 +232,16 @@ class _InputPageState extends State<InputPage> {
             BottomButtonCustom(
               buttonName: 'CALCULATE',
               buttonFunction: () {
+                // create object of CalculateBrain to pass values and calculate the result
+                CalculatorBrain calculatorBrain =
+                    CalculatorBrain(height: userHeight, weight: userWeight);
+
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ResultPage();
+                  return ResultPage(
+                    calculatedBMI: calculatorBrain.calculateBMI(),
+                    resultStatus: calculatorBrain.getResultStatus().toUpperCase(),
+                    resultInterpretation: calculatorBrain.getInterpretation(),
+                    );
                 }));
               },
             ),

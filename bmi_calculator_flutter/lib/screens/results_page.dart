@@ -5,7 +5,17 @@ import '../constants.dart';
 import '../components/buttom_button.dart';
 
 class ResultPage extends StatelessWidget {
-  const ResultPage({super.key});
+  // const ResultPage({super.key});
+
+  // fields to store results
+  final String? calculatedBMI;
+  final String? resultStatus;
+  final String? resultInterpretation;
+
+  ResultPage(
+      {required this.calculatedBMI,
+      required this.resultStatus,
+      required this.resultInterpretation});
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +29,8 @@ class ResultPage extends StatelessWidget {
         children: <Widget>[
           Expanded(
               child: Container(
-                padding: EdgeInsets.all(15.0),
-                alignment: Alignment.bottomLeft,
+                  padding: EdgeInsets.all(15.0),
+                  alignment: Alignment.bottomLeft,
                   child: Text('Your Result', style: kTitleTextStyle))),
           Expanded(
               flex: 5,
@@ -31,15 +41,15 @@ class ResultPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'NORMAL',
+                      resultStatus.toString(),
                       style: KHealthStatusTextStyle,
                     ),
                     Text(
-                      '56.1',
+                      calculatedBMI.toString(),
                       style: kCalculatedValueTextStyle,
                     ),
                     Text(
-                      'health message',
+                      resultInterpretation.toString(),
                       style: kMessageTextStyle,
                     ),
                   ],
