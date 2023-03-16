@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import constant properties
-import 'constants.dart';
+import '../constants.dart';
 
 // custom Widget
 class IconContent extends StatelessWidget {

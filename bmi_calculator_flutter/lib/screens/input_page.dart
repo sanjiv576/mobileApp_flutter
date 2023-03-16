@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import custom widget for gender icons
-import 'icon_content.dart';
+import '../components/icon_content.dart';
 // import custom widget for reusable container card
-import 'reusable_container_card.dart';
+import '../components/reusable_container_card.dart';
 // import constant properties
-import 'constants.dart';
+import '../constants.dart';
+// import result page
+import 'results_page.dart';
+
+import '../components/round_icon_button.dart';
+import '../components/buttom_button.dart';
 
 GenderType? selectedGender;
 int userHeight = 170;
@@ -221,43 +226,23 @@ class _InputPageState extends State<InputPage> {
                 ),
               ],
             )),
-            Container(
-              // takes all width for all mobile devices
-              width: double.infinity,
-              height: kBottomContainerHeight,
-              margin: EdgeInsets.only(top: 10.0),
-              color: kBottomContainerColour,
-            )
+            BottomButtonCustom(
+              buttonName: 'CALCULATE',
+              buttonFunction: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ResultPage();
+                }));
+              },
+            ),
           ]),
     );
   }
 }
 
-// custom Button widget
 
-class RoundIconButton extends StatelessWidget {
-  // const RoundIconButton({super.key});
+// custom buttom_button Widget was here
 
-  final IconData? icon;
-  final VoidCallback onPressedCustom;
-  RoundIconButton({required this.icon, required this.onPressedCustom});
-
-  @override
-  Widget build(BuildContext context) {
-    return RawMaterialButton(
-      onPressed: onPressedCustom,
-      elevation: 6.0,
-      constraints: BoxConstraints.tightFor(
-        height: 56.0,
-        width: 56.0,
-      ),
-      shape: CircleBorder(),
-      fillColor: Color(0xFF4C4F5E),
-      child: Icon(icon),
-    );
-  }
-}
-
+// custom roundIconButton was here
 
 
 //  custom Widget was here i.e IconContent
