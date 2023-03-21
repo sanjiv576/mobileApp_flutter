@@ -54,46 +54,42 @@ class MyHomepage extends StatelessWidget {
             ),
             Expanded(
               // flex: 1,
-              child: Container(
-                  color: Colors.red,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KActiveButtonColor,
 
-                  // height: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: KActiveButtonColor,
-
-                          padding: EdgeInsets.all(24.0),
-                          // textStyle: TextStyle(fontSize: 44.0),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.white, width: 3),
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                        child: Text('Register', style: kButtonTextStyle),
+                      padding: EdgeInsets.all(24.0),
+                      // textStyle: TextStyle(fontSize: 44.0),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.white, width: 3),
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/login');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: kInactiveButtonColor,
-                          padding: EdgeInsets.all(24.0),
-                          // textStyle: TextStyle(fontSize: 44.0),
-                          side: BorderSide(color: Colors.white, width: 3),
+                    ),
+                    child: Text('Register', style: kButtonTextStyle),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kInactiveButtonColor,
+                      padding: EdgeInsets.all(24.0),
+                      // textStyle: TextStyle(fontSize: 44.0),
+                      side: BorderSide(color: Colors.white, width: 3),
 
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                        child: Text('Signin', style: kButtonTextStyle),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
-                    ],
-                  )),
+                    ),
+                    child: Text('Signin', style: kButtonTextStyle),
+                  ),
+                ],
+              ),
             ),
           ]),
         ),
