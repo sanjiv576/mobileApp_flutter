@@ -26,7 +26,6 @@ const kButtonTextStyle = TextStyle(
   letterSpacing: 1.15,
 );
 
-
 // used in login
 const kMsgTextStyle = TextStyle(
   // color: Color(0xFF9E9AAA),
@@ -34,5 +33,24 @@ const kMsgTextStyle = TextStyle(
   fontSize: 20.0,
   fontWeight: FontWeight.w400,
   letterSpacing: 1.0,
-  
+);
+
+const kFieldTextStyle = Color(0xFFA9A7B0);
+
+const kRecoveryTextField = TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 14.0,
+  fontWeight: FontWeight.w800,
+  color: Color(0xFF787687),
+);
+
+const facebookIconUrl = 'https://cdn-icons-png.flaticon.com/512/5968/5968764.png';
+const appleIconUrl = 'https://cdn-icons-png.flaticon.com/512/0/747.png';
+const googleIconUrl = 'https://cdn-icons-png.flaticon.com/512/2504/2504739.png';
+
+
+const kRegisterTextStyle = TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 14.0,
+  fontWeight: FontWeight.w800,
 );
