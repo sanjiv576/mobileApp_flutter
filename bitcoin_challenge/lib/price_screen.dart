@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'coin_data.dart';
 // for ios picker
 import 'package:flutter/cupertino.dart';
+import '../services/bitcoin.dart';
 
 // to know which platform either android or ios ,
 // currently this app is running so we import dart:io
@@ -18,6 +19,7 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String? selectCurrency = 'USD';
+  String rateUI = '?';
 
 // for Android Dropdown
 
@@ -41,6 +43,7 @@ class _PriceScreenState extends State<PriceScreen> {
       onChanged: (value) {
         setState(() {
           selectCurrency = value;
+          getCoinData(selectCurrency!);
           print(selectCurrency);
         });
       },
@@ -54,7 +57,11 @@ class _PriceScreenState extends State<PriceScreen> {
       itemExtent: 45.0,
       backgroundColor: Colors.lightBlue,
       onSelectedItemChanged: (selectedIndex) {
-        print(selectedIndex);
+        // print(selectedIndex);
+        selectCurrency = currenciesList[selectedIndex];
+        // get new coin value
+        getCoinData(selectCurrency!);
+        print('$selectedIndex : $selectCurrency');
       },
       children: getPickerItems(),
     );
@@ -80,6 +87,29 @@ class _PriceScreenState extends State<PriceScreen> {
     return androidDropdownButton();
   }
 
+  Future<dynamic> getCoinData(String selectCurrency) async {
+    Bitcoin b = Bitcoin();
+    // print('Start');
+    var rate = await b.getData(currency: selectCurrency);
+
+   // print("Rate: $rate");
+   // print('end');
+
+    setState(() {
+      rate = rate.toInt();
+      rateUI = rate.toString();
+    });
+
+    return rate;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+   // print('Uper start');
+    getCoinData(selectCurrency!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,24 +121,24 @@ class _PriceScreenState extends State<PriceScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC = ? USD',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+            //  padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+            padding: EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ReusableCard(
+                    changeCurrencyName: 'BTC',
+                    rateUI: rateUI,
+                    selectCurrency: selectCurrency),
+                ReusableCard(
+                    changeCurrencyName: 'ETH',
+                    rateUI: rateUI,
+                    selectCurrency: selectCurrency),
+                ReusableCard(
+                    changeCurrencyName: 'LTC',
+                    rateUI: rateUI,
+                    selectCurrency: selectCurrency),
+              ],
             ),
           ),
           Container(
@@ -121,6 +151,41 @@ class _PriceScreenState extends State<PriceScreen> {
             child: Platform.isIOS ? iosPicker() : androidDropdownButton(),
           )
         ],
+      ),
+    );
+  }
+}
+
+class ReusableCard extends StatelessWidget {
+  final String? changeCurrencyName;
+  const ReusableCard(
+      {Key? key,
+      required this.rateUI,
+      required this.selectCurrency,
+      required this.changeCurrencyName})
+      : super(key: key);
+
+  final String rateUI;
+  final String? selectCurrency;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.lightBlueAccent,
+      elevation: 5.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+        child: Text(
+          '1 $changeCurrencyName = $rateUI $selectCurrency',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20.0,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
