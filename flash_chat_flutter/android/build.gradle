@@ -1,16 +1,21 @@
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    // here add latest version of Kotlin to remove runtime bug
+    ext.kotlin_version = '1.8.20-RC2'
+    
+// here make sure you have google and mavenCentral repos for firebase connection
     repositories {
         google()
         mavenCentral()
     }
-
+// here added google-services from firebase
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.15'
     }
 }
 
+// here make sure you have google and mavenCentral repos for firebase connection
 allprojects {
     repositories {
         google()
