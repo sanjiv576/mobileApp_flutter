@@ -38,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-// method -1 to get data from the cloud, but, we need to pull data from the cloud manually
+  // method -1 to get data from the cloud, but, we need to pull data from the cloud manually
   void getMessages() async {
     // get data from the cloud in the form of QuerySnapshot<Map> so loop it to get each message
     final messages = await _firestore.collection('messages').get();
@@ -87,6 +87,51 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            // StreamBuilder --> widget that builds iteself from the lastest snapshot by interacting with Stream
+            StreamBuilder<QuerySnapshot>(
+              // from where data come
+              stream: _firestore.collection('messages').snapshots(),
+              // build and return widget when new value event occurs i.e when new message is sent
+              builder: (context, snapshot) {
+                // data data in Column widget if the snapshot has data
+                if (snapshot.hasData) {
+                  // convert data into Map since it has data in QuerySnapshot
+                  final messages = snapshot.data!.docs;
+
+                  // store data in widget to return at last
+                  List<MessageBubble> messageWidgets = [];
+
+                  // get each data/message by looping
+                  for (var message in messages) {
+                    // get sent message text
+                    final messageText = message.get('text');
+                    // get each sender that sent message
+                    final messageSender = message.get('sender');
+                    // wrap both sender and message in a Text widget
+                    final messageWidget =
+                        MessageBubble(sender: messageSender, text: messageText);
+
+                    // add get Text widget in the list
+                    messageWidgets.add(messageWidget);
+                  }
+
+                  // return Column widget
+                  return Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 20.0),
+                      children: messageWidgets,
+                    ),
+                  );
+                } else {
+                  // return a spinning progress if the snapshot does not have data or null
+                  return Center(
+                    child:
+                        CircularProgressIndicator(backgroundColor: Colors.blue),
+                  );
+                }
+              },
+            ),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -128,6 +173,43 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// UI for each message display
+
+class MessageBubble extends StatelessWidget {
+  // const MessageBubble({super.key});
+
+  final String? sender;
+  final String? text;
+
+  MessageBubble({required this.sender, required this.text});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Text(
+            sender.toString(),
+            style: TextStyle(fontSize: 12.0, color: Colors.black54),
+          ),
+          Material(
+            borderRadius: BorderRadius.circular(34.0),
+            color: Colors.lightBlueAccent,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 26.0),
+              child: Text(
+                text.toString(),
+                style: TextStyle(fontSize: 20.9),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
