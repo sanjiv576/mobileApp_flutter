@@ -6,6 +6,10 @@ import '../constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// make global
+final _firestore = FirebaseFirestore.instance;
+User? loggedInUser;
+
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
 
@@ -15,9 +19,9 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _auth = FirebaseAuth.instance;
-  User? loggedInUser;
-  final _firestore = FirebaseFirestore.instance;
   String? messageText;
+  // for clearing the message text field
+  final messageTextController = TextEditingController();
 
   @override
   void initState() {
@@ -72,11 +76,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 // Example 1
                 //  getMessages();
                 //  Example 2
-                messageStream();
+                //  messageStream();
                 //Implement logout functionality
-                // _auth.signOut();
-                // print('Logged out');
-                // Navigator.pop(context);
+                _auth.signOut();
+                print('Logged out');
+                Navigator.pop(context);
               }),
         ],
         title: Text('⚡️Chat'),
@@ -88,50 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             // StreamBuilder --> widget that builds iteself from the lastest snapshot by interacting with Stream
-            StreamBuilder<QuerySnapshot>(
-              // from where data come
-              stream: _firestore.collection('messages').snapshots(),
-              // build and return widget when new value event occurs i.e when new message is sent
-              builder: (context, snapshot) {
-                // data data in Column widget if the snapshot has data
-                if (snapshot.hasData) {
-                  // convert data into Map since it has data in QuerySnapshot
-                  final messages = snapshot.data!.docs;
-
-                  // store data in widget to return at last
-                  List<MessageBubble> messageWidgets = [];
-
-                  // get each data/message by looping
-                  for (var message in messages) {
-                    // get sent message text
-                    final messageText = message.get('text');
-                    // get each sender that sent message
-                    final messageSender = message.get('sender');
-                    // wrap both sender and message in a Text widget
-                    final messageWidget =
-                        MessageBubble(sender: messageSender, text: messageText);
-
-                    // add get Text widget in the list
-                    messageWidgets.add(messageWidget);
-                  }
-
-                  // return Column widget
-                  return Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 20.0),
-                      children: messageWidgets,
-                    ),
-                  );
-                } else {
-                  // return a spinning progress if the snapshot does not have data or null
-                  return Center(
-                    child:
-                        CircularProgressIndicator(backgroundColor: Colors.blue),
-                  );
-                }
-              },
-            ),
+            MessageBuilder(),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -139,6 +100,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: messageTextController,
                       onChanged: (value) {
                         //Do something with the user input.
                         messageText = value;
@@ -148,6 +110,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      // clear the field
+                      messageTextController.clear();
+
                       //Implement send functionality.
                       print(
                           'Sender : ${loggedInUser!.email} \n Message : $messageText');
@@ -178,34 +143,113 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
+class MessageBuilder extends StatelessWidget {
+  // const MessageBuilder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      // from where data come
+      stream: _firestore.collection('messages').snapshots(),
+      // build and return widget when new value event occurs i.e when new message is sent
+      builder: (context, snapshot) {
+        // data data in Column widget if the snapshot has data
+        if (snapshot.hasData) {
+          // convert data into Map since it has data in QuerySnapshot
+          final messages = snapshot
+              .data!.docs.reversed; // reversed doc for user experience, step -2
+
+          // store data in widget to return at last
+          List<MessageBubble> messageWidgets = [];
+
+          // get each data/message by looping
+          for (var message in messages) {
+            // get sent message text
+            final messageText = message.get('text');
+            // get each sender that sent message
+            final messageSender = message.get('sender');
+
+            // get current user's email
+            final currentUser = loggedInUser!.email;
+
+            // wrap both sender and message in a Text widget
+            final messageWidget = MessageBubble(
+              sender: messageSender,
+              text: messageText,
+              isMe: currentUser == messageSender,
+            );
+
+            // add get Text widget in the list
+            messageWidgets.add(messageWidget);
+          }
+
+          // return Column widget
+          return Expanded(
+            child: ListView(
+              // For user experience, step -1
+              // up the latest message at the top by enabling reverse as true
+              reverse: true,
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+              children: messageWidgets,
+            ),
+          );
+        } else {
+          // return a spinning progress if the snapshot does not have data or null
+          return Center(
+            child: CircularProgressIndicator(backgroundColor: Colors.blue),
+          );
+        }
+      },
+    );
+  }
+}
+
 // UI for each message display
 
 class MessageBubble extends StatelessWidget {
   // const MessageBubble({super.key});
 
-  final String? sender;
-  final String? text;
+  String? sender;
+  String? text;
 
-  MessageBubble({required this.sender, required this.text});
+  bool? isMe;
+
+  MessageBubble({required this.sender, required this.text, required this.isMe});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment:
+            isMe! ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             sender.toString(),
             style: TextStyle(fontSize: 12.0, color: Colors.black54),
           ),
           Material(
-            borderRadius: BorderRadius.circular(34.0),
-            color: Colors.lightBlueAccent,
+            borderRadius: isMe!
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  )
+                : BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                    bottomLeft: Radius.circular(20),
+                  ),
+            color: isMe! ? Colors.lightBlueAccent : Colors.white,
+            elevation: 5.0,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 26.0),
               child: Text(
                 text.toString(),
-                style: TextStyle(fontSize: 20.9),
+                // textAlign: isMe! ? TextAlign.right : TextAlign.left,
+                style: TextStyle(
+                    fontSize: 16.9,
+                    color: isMe! ? Colors.white : Colors.black54),
               ),
             ),
           ),
