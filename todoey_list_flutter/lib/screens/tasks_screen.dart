@@ -3,9 +3,16 @@ import '../constants.dart';
 import '../widgets/tasks_list.dart';
 import '../widgets/tasks_tile.dart';
 import '../screens/add_tasks_screen.dart';
+import '../models/tasks.dart';
 
-class TasksScreen extends StatelessWidget {
+class TasksScreen extends StatefulWidget {
+  @override
+  State<TasksScreen> createState() => _TasksScreenState();
+}
+
+class _TasksScreenState extends State<TasksScreen> {
   //const TasksScreen({super.key});
+  List<Tasks> tasks = [Tasks(taskName: 'Wash dishes')];
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +20,16 @@ class TasksScreen extends StatelessWidget {
       backgroundColor: Colors.lightBlue,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // displays widget from the bottom 
+          // displays widget from the bottom
           showModalBottomSheet(
-              context: context, builder: (context) => AddTasksScreen());
+              context: context,
+              builder: (context) =>
+                  AddTasksScreen(addTaskCallBack: (newTextTitle) {
+                    setState(() {
+                      print(newTextTitle);
+                      tasks.add(Tasks(taskName: newTextTitle));
+                    });
+                  }));
         },
         child: Icon(
           Icons.add,
@@ -50,7 +64,7 @@ class TasksScreen extends StatelessWidget {
                       fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  '12 Tasks',
+                  '${tasks.length} Tasks',
                   style: TextStyle(color: Colors.white, fontSize: 20.0),
                 ),
               ],
@@ -66,7 +80,7 @@ class TasksScreen extends StatelessWidget {
                   topRight: Radius.circular(20.0),
                 ),
               ),
-              child: TasksList(),
+              child: TasksList(tasks: tasks),
             ),
           ),
         ],
